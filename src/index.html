@@ -63,6 +63,12 @@
 </div>
 <br/>
 <div id="hrm-content" class="demo-apphrm">
+
+    <input id="filter" maxlength="30" placeholder="Type month number to filter by month" type="text"
+    data-bind="event: {keyup: handleKeyUp}, 
+               textInput: filter, 
+               ojComponent: {component:'ojInputText'}">
+
     <div id='datagrid' 
      style='width:100%;height:400px;' 
      aria-label="Planning and Resource Grid"

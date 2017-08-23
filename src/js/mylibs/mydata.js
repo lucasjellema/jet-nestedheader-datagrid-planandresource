@@ -13,6 +13,8 @@ define(
    , {name: "Klaasje", month:1, "week":"2", "day":1, "planned":"0", "available":"8", "activity": null}
    , {name: "Klaasje", month:1, "week":"2", "day":2, "planned":"0", "available":"8", "activity": null}
    , {name: "Klaasje", month:1, "week":"1", "day":1, "planned":"8", "available":"8", "activity": null}
+   , {name: "Klaasje", month:2, "week":"7", "day":1, "planned":"8", "available":"8", "activity": null}
+   , {name: "Klaasje", month:2, "week":"6", "day":2, "planned":"4", "available":"8", "activity": null}
    , {name: "Gerrit", month:1, "week":"1", "day":1, "planned":"8", "available":"8", "activity": null}
    , {name: "Gerrit", month:1, "week":"1", "day":2, "planned":"8", "available":"8", "activity": null}
    , {name: "Gerrit", month:1, "week":"1", "day":4, "planned":"3", "available":"8", "activity": null}
@@ -25,6 +27,8 @@ define(
    , {name: "Gerrit", month:1, "week":"3", "day":6, "planned":"8", "available":"8", "activity": "Break"}
    , {name: "Gerrit", month:1, "week":"4", "day":6, "planned":"8", "available":"8", "activity": "Break"}
    , {name: "Gerrit", month:2, "week":"5", "day":6, "planned":"8", "available":"8", "activity": "Break"}
+   , {name: "Erik", month:2, "week":"5", "day":3, "planned":"3", "available":"8", "activity": null}
+   , {name: "Erik", month:2, "week":"5", "day":4, "planned":"6", "available":"8", "activity": null}
    , {name: "Erik", month:3, "week":"9", "day":6, "planned":"8", "available":"8", "activity": "Break"}
    , {name: "Erik", month:3, "week":"10", "day":3, "planned":"2", "available":"8"}
 ]});

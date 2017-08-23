@@ -55,7 +55,7 @@ requirejs.config(
  * objects in the callback
  */
 require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknockout', 'ojs/ojbutton', 'ojs/ojtoolbar', 'ojs/ojmenu', 'promise',
-    'ojs/ojdatagrid', 'ojs/ojdatasource-common'],
+    'ojs/ojdatagrid', 'ojs/ojdatasource-common', 'ojs/ojinputtext'],
     function (oj, ko, app, mydata) { // this callback gets executed when all required modules are loaded
 
         /**
@@ -457,8 +457,18 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
 
 
         //Knockout model to bind to the grid
-        function dataGridModel(rowCount, colCount, months, employees, grid, columnHeaders) {
-            this.data = new NestedHeaderDataGridDataSource(rowCount, colCount, months, employees, grid, columnHeaders);
+        function dataGridModel(rawdata) {
+            var self = this;
+            function prepareDataSource(rawcells) {
+                var datamodel = prepareModelFromRawCells(rawcells);
+                var datasource = new NestedHeaderDataGridDataSource(datamodel.empseq, datamodel.seq, datamodel.months, datamodel.employees, datamodel.grid, datamodel.columnHeaders);
+                return datasource
+            }
+            self.datasource = prepareDataSource(rawdata.cells);
+
+
+            self.data = ko.observable();
+            self.data(this.datasource);
             this.rowHeaderRenderer = function (headerContext) {
                 // container div to rotate the text
                 var container = document.createElement('div');
@@ -491,16 +501,32 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                 var cell = cellContext.datasource.grid[row][col];
                 if (cell) {
                     if (cell.activity) {
-                       if ('Break' === cell.activity) return " break-style";
+                        if ('Break' === cell.activity) return " break-style";
                     } else {
                         if (cell.planned > 4) return 'green-style';
                     }
                 }
                 return '';
             };
+
+            self.filter = new ko.observable('');
+            self.handleKeyUp = function () {
+                console.log("key up " + self.filter());
+                // now we can filter rawdata and derive the datasource from the filter result
+                // based on the value in filter I will include entries for a specific month only
+
+
+
+                self.datasource = prepareDataSource(rawdata.cells.filter(function (cell) {
+                    if (self.filter()) return (cell.month == self.filter())
+                    else return true;
+                }));
+                self.data(self.datasource);
+                self.data.valueHasMutated();
+            }
         }//dataGridModel
 
-        function prepareModelFromRawCells(mydata) {
+        function prepareModelFromRawCells(rawcells) {
             var dm = {};
             var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'Oct', 'November', 'December'];
             var weekdays = [{ "name": "M" }, { "name": "T" }, { "name": "W", seq: null }, { "name": "T", seq: null }, { "name": "F", seq: null }, { "name": "S", seq: null }, { "name": "S", seq: null }];
@@ -516,8 +542,8 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
             var months = {};
             var employees = {};
             var columnHeaders = []; // array of header objects for each column {month, week, day}
-            for (var i = 0; i < mydata.cells.length; i++) {
-                var cell = mydata.cells[i];
+            for (var i = 0; i < rawcells.length; i++) {
+                var cell = rawcells[i];
                 if (!employees[cell.name]) {
                     employees[cell.name] = { "name": cell.name };
                 }
@@ -562,8 +588,8 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                 grid[i] = new Array(seq);
             }
             // iterate once more over all cells; assign each cell to a spot in the grid
-            for (var i = 0; i < mydata.cells.length; i++) {
-                var cell = mydata.cells[i];
+            for (var i = 0; i < rawcells.length; i++) {
+                var cell = rawcells[i];
                 var row = employees[cell["name"]].seq;
                 var col = months[cell.month].weeks[cell.week].days[cell.day]['seq'];
                 grid[row][col] = cell;
@@ -581,11 +607,11 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
         $(function () {
 
             function init() {
-                var datamodel = prepareModelFromRawCells(mydata);
+                //                var datamodel = prepareModelFromRawCells(mydata);
 
                 // create the new dataGridModel, passing the data read from module mylibs/mydata
-                ko.applyBindings(new dataGridModel(datamodel.empseq, datamodel.seq, datamodel.months, datamodel.employees, datamodel.grid, datamodel.columnHeaders),
-                    document.getElementById('datagrid'));
+                ko.applyBindings(new dataGridModel(mydata),
+                    document.getElementById('hrm-content'));
             }
 
             // If running in a hybrid (e.g. Cordova) environment, we need to wait for the deviceready 
