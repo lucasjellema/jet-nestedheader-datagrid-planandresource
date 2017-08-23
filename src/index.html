@@ -92,6 +92,7 @@
         cell: 
         {
             className: setCellClass
+            , template : 'cell_template'
             ,    style: 'width:15px'
         }
 
@@ -100,6 +101,10 @@
       </div>
     </div>
     
+    <script type="text/html" id="cell_template">
+          <span data-bind="html:'<span>' + $data + '</span>'">
+          </span>
+        </script>
     <script type="text/javascript" src="js/libs/require/require.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
 
