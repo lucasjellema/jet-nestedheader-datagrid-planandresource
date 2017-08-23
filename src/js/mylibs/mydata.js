@@ -2,7 +2,7 @@ define(
 {"cells": [
     {name: "Henk", month:12, "week":"51", "day":0, "planned":"8", "available":"8", "activity": null},
     {name: "Henk", month:11, "week":"47", "day":0, "planned":"8", "available":"8", "activity": null},
-    {name: "Henk", month:1, "week":"1", "day":0, "planned":"8", "available":"8", "activity": null}
+    {name: "Henk", month:1, "week":"1", "day":0, "planned":"8", "available":"8", "activity": "Travel"}
    , {name: "Henk", month:1, "week":"1", "day":2, "planned":"8", "available":"8", "activity": null}
    , {name: "Henk", month:1, "week":"1", "day":3, "planned":"8", "available":"8", "activity": null}
    , {name: "Pietje", month:1, "week":"1", "day":1, "planned":"8", "available":"8", "activity": null}

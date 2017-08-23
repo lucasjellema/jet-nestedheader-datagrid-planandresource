@@ -7,11 +7,18 @@
 */
 .green-style 
 {
-    background-color:green
+    background-color:greenyellow
     ;
 }
 
 .break-style
 {
     background-color:#cc8e1d;
+}
+
+/* specify width of individual cells
+*/
+.oj-datagrid-depth-1
+{
+    width:45px;
 }

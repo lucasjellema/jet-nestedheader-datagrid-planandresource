@@ -25,16 +25,16 @@
   ***************************** IMPORTANT INFORMATION ************************************ -->
 <html lang="en-us">
   <head>
-    <title>Oracle JET Starter Template - Web Basic</title>
+    <title>Planning and Resource Page (using Oracle JET Data Grid with nested headers)</title>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="css/images/favicon.ico" type="image/x-icon" />
 
     <!-- This is the main css file for the default Alta theme -->
-    <!-- injector:theme -->
-    <link rel="stylesheet" href="css/libs/oj/v3.2.0/alta/oj-alta-min.css" type="text/css"/>
-    <!-- endinjector -->
+<!-- injector:theme -->
+<link rel="stylesheet" href="css/alta/3.2.0/web/alta.css" id="css" />
+<!-- endinjector -->
     <!-- This contains icon fonts used by the starter template -->
     <link rel="stylesheet" href="css/demo-alta-site-min.css" type="text/css"/>
 
@@ -53,42 +53,45 @@
       <header role="banner" class="oj-web-applayout-header">
         <div class="oj-web-applayout-max-width oj-flex-bar oj-sm-align-items-center">
           <div data-bind="css: smScreen() ? 'oj-flex-bar-center-absolute' : 'oj-flex-bar-middle oj-sm-align-items-baseline'">
-            <span role="img" class="oj-sm-only-hide oj-icon demo-oracle-icon" title="Oracle Logo" alt="Oracle Logo"></span>
             <h1 class="oj-web-applayout-header-title" title="Application Name" data-bind="text: appName"></h1>
-          </div>
-          <div class="oj-flex-bar-end">
-            <!-- Responsive Toolbar -->
-            <div data-bind="ojComponent: {component:'ojToolbar'}">
-              <button id="userMenu"
-                data-bind="ojComponent: {component: 'ojButton', label: userLogin,
-                display: smScreen() ? 'icons' : 'all',
-                icons: smScreen() ? {start: 'oj-icon demo-appheader-avatar', end: null} : {end: 'oj-component-icon oj-button-menu-dropdown-icon'},
-                chroming: 'half', menu: '#menu1'}">
-              </button>
-              <ul id='menu1' data-bind="ojComponent: {component: 'ojMenu'}" style="display:none">
-                <li id="pref"><a href="#">Preferences</a></li>
-                <li id="help"><a href="#">Help</a></li>
-                <li id="about"><a href="#">About</a></li>
-                <li id="out"><a href="#">Sign Out</a></li>
-              </ul>
-            </div>
           </div>
         </div>
       </header>
       <div role="main" class="oj-web-applayout-max-width oj-web-applayout-content">
+        <div>
+    Planning and Resource Screen
+</div>
+<br/>
+<div id="hrm-content" class="demo-apphrm">
+    <div id='datagrid' 
+     style='width:100%;height:400px;' 
+     aria-label="Planning and Resource Grid"
+     data-bind = "ojComponent: {
+     component: 'ojDataGrid', 
+     data: data,        
+     selectionMode: { cell: 'multiple'}, 
+     header: 
+     {
+        column: 
+        { 
+            resizable: {width:'enable',height:'enable'}
+        },
+        row:
+        {
+            resizable: {width:'enable',height:'enable'},
+            renderer: small() ? rowHeaderRenderer : null,
+            style: small() ? rowHeaderStyle : ''            
+        }
+     },
+        cell: 
+        {
+            className: setCellClass
+            ,    style: 'width:15px'
+        }
+
+     }">
+</div>
       </div>
-      <footer class="oj-web-applayout-footer" role="contentinfo">
-        <div class="oj-web-applayout-footer-item oj-web-applayout-max-width">
-          <ul>
-            <!-- ko foreach: footerLinks -->
-            <li><a data-bind="text : name, attr : {id: linkId, href : linkTarget}"></a></li>
-            <!-- /ko -->
-          </ul>
-        </div>
-        <div class="oj-web-applayout-footer-item oj-web-applayout-max-width oj-text-secondary-color oj-text-sm">
-          Copyright © 2014, 2017 Oracle and/or its affiliates All rights reserved.
-        </div>
-      </footer>
     </div>
     
     <script type="text/javascript" src="js/libs/require/require.js"></script>

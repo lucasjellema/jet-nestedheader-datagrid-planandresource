@@ -479,6 +479,9 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
 
             this.small = oj.ResponsiveKnockoutUtils.createMediaQueryObservable(smQuery);
 
+            // if used, should return the string with the textual value for  the cell
+            // or a DOM element of the content inside the data body cell.
+            // http://www.oracle.com/webfolder/technetwork/jet/jsdocs/oj.ojDataGrid.html#cell.renderer
             this.cellRenderer = function (cellContext) {
             };
 
@@ -486,9 +489,12 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                 var row = cellContext.indexes.row;
                 var col = cellContext.indexes.column;
                 var cell = cellContext.datasource.grid[row][col];
-                if (cell && cell.day) {
-                    if (cell.activity && 'Break' === cell.activity) return " break-style";
-                    return 'green-style';
+                if (cell) {
+                    if (cell.activity) {
+                       if ('Break' === cell.activity) return " break-style";
+                    } else {
+                        if (cell.planned > 4) return 'green-style';
+                    }
                 }
                 return '';
             };
