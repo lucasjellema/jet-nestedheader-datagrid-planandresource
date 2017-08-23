@@ -1,0 +1,17 @@
+/*
+    Document   : override
+    Created on : <date>
+    Author     : <author>
+    Description:
+        This is where any of your application specific styles should be included
+*/
+.green-style 
+{
+    background-color:green
+    ;
+}
+
+.break-style
+{
+    background-color:#cc8e1d;
+}
