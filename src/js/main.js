@@ -502,7 +502,6 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
 
         function prepareModelFromRawCells(mydata) {
             var dm = {};
-            console.log(mydata);
             var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'Oct', 'November', 'December'];
             var weekdays = [{ "name": "M" }, { "name": "T" }, { "name": "W", seq: null }, { "name": "T", seq: null }, { "name": "F", seq: null }, { "name": "S", seq: null }, { "name": "S", seq: null }];
             // extract from data set
@@ -533,23 +532,16 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
 
             }//for
 
-            console.log(months);
-            console.log(employees);
             // determine sequence number for each element in months hierarchy; highest sequence number == total number of columns
-            console.log("Number of rows == number of employees ==" + Object.keys(employees).length);
-            console.log(Object.keys(months));
             // loop over months, weeks, days to assign the column sequence number for each day
             var seq = 0;
             for (var month in months) {
-                console.log("Month " + months[month].name);
                 months[month].seq = seq;
                 for (var week in months[month].weeks) {
-                    console.log("Week " + months[month].weeks[week].week);
                     months[month].weeks[week].seq = seq;
                     for (var day in months[month].weeks[week].days) {
                         columnHeaders.push({ "month": month, "week": week, "day": day });
                         months[month].weeks[week].days[day]['seq'] = seq++;
-                        console.log("Day " + months[month].weeks[week].days[day].name + months[month].weeks[week].days[day]['seq']);
                     }// weeks
                     months[month].weeks[week].endSeq = seq;
                 }// weeks
@@ -560,7 +552,6 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
             // loop over employees to assign the row sequence number for each employee
             var empseq = 0;
             for (var employee in employees) {
-                console.log("Employee " + employees[employee].name);
                 employees[employee].seq = empseq++;
             }// employees
             // value of empseq is the number of rows in the grid
@@ -577,7 +568,6 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                 var col = months[cell.month].weeks[cell.week].days[cell.day]['seq'];
                 grid[row][col] = cell;
             }//for
-            console.log(grid);
 
             dm.seq = seq;
             dm.empseq = empseq;
