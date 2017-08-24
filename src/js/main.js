@@ -55,7 +55,7 @@ requirejs.config(
  * objects in the callback
  */
 require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknockout', 'ojs/ojbutton', 'ojs/ojtoolbar', 'ojs/ojmenu', 'promise',
-    'ojs/ojdatagrid', 'ojs/ojdatasource-common', 'ojs/ojinputtext'],
+    'ojs/ojdatagrid', 'ojs/ojdatasource-common', 'ojs/ojinputtext', 'ojs/ojbutton', 'ojs/ojpopup'],
     function (oj, ko, app, mydata) { // this callback gets executed when all required modules are loaded
 
         /**
@@ -475,8 +475,7 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                 if (headerContext['level'] != 2) {
                     container.className = 'demo-content-container';
                 }
-                container.appendChild(
-                    document.createTextNode(headerContext['data']));
+                container.appendChild(document.createTextNode(headerContext['data']));
                 return container;
             };
             this.rowHeaderStyle = function (headerContext) {
@@ -523,7 +522,45 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                 }));
                 self.data(self.datasource);
                 self.data.valueHasMutated();
-            }
+            }// handleKeyUp
+
+            self.v = 'handje';
+            //self.celletje = new ko.observable('');
+            //self.celletje('Jan');
+
+
+            self.clickCell = function (cellContext, event) {
+                //                 console.log("cell clicked "+cellContext);
+                // self.celletje ("me"+ new Date());
+                // self.celletje.valueHasMutated();
+                $('#popup1').ojPopup(); //initialize
+                var row = cellContext.indexes.row;
+                var col = cellContext.indexes.column;
+                var cell = cellContext.datasource.grid[row][col];
+                if (cell) {
+                    var content = $("#popup1").find(".popupEmployee").first();
+                    content.text(cell.name);
+                    content = $("#popup1").find(".popupActivity").first();
+                    content.text(cell.activity ? ' activity: ' + cell.activity : '');
+                    content = $("#popup1").find(".popupWeekDay").first();
+                    content.text(cell.week+'-'+cell.day);
+                    //     + ' Hours planned: ' + cell.planned
+                    // );
+                }
+                var currentTarget = event.currentTarget;
+                var parent = currentTarget.parentElement;
+                $('#popup1').ojPopup('open', parent);
+            }// clickCell
+
+
+            // to provide a unique id for all cells!
+var id = 0;
+
+self.uniqueId = function () {
+    return id++;
+}
+
+
         }//dataGridModel
 
         function prepareModelFromRawCells(rawcells) {

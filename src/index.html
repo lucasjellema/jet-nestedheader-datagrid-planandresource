@@ -24,55 +24,62 @@
   section to represent the appropriate content type.
   ***************************** IMPORTANT INFORMATION ************************************ -->
 <html lang="en-us">
-  <head>
-    <title>Planning and Resource Page (using Oracle JET Data Grid with nested headers)</title>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="css/images/favicon.ico" type="image/x-icon" />
+<head>
+  <title>Planning and Resource Page (using Oracle JET Data Grid with nested headers)</title>
 
-    <!-- This is the main css file for the default Alta theme -->
-<!-- injector:theme -->
-<link rel="stylesheet" href="css/alta/3.2.0/web/alta.css" id="css" />
-<!-- endinjector -->
-    <!-- This contains icon fonts used by the starter template -->
-    <link rel="stylesheet" href="css/demo-alta-site-min.css" type="text/css"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="css/images/favicon.ico" type="image/x-icon" />
 
-    <!-- This is where you would add any app specific styling -->
-    <link rel="stylesheet" href="css/override.css" type="text/css"/>
+  <!-- This is the main css file for the default Alta theme -->
+  <!-- injector:theme -->
+  <link rel="stylesheet" href="css/alta/3.2.0/web/alta.css" id="css" />
+  <!-- endinjector -->
+  <!-- This contains icon fonts used by the starter template -->
+  <link rel="stylesheet" href="css/demo-alta-site-min.css" type="text/css" />
 
-  </head>
-  <body class="oj-web-applayout-body">
-    <div id="globalBody" class="oj-web-applayout-page">
-      <!--
+  <!-- This is where you would add any app specific styling -->
+  <link rel="stylesheet" href="css/override.css" type="text/css" />
+
+</head>
+
+<body class="oj-web-applayout-body">
+  <div id="globalBody" class="oj-web-applayout-page">
+    <!--
          ** Oracle JET V3.2.0 web application header pattern.
          ** Please see the demos under Cookbook/Patterns/App Shell: Web
          ** and the CSS documentation under Support/API Docs/Non-Component Styling
          ** on the JET website for more information on how to use this pattern.
       -->
-      <header role="banner" class="oj-web-applayout-header">
-        <div class="oj-web-applayout-max-width oj-flex-bar oj-sm-align-items-center">
-          <div data-bind="css: smScreen() ? 'oj-flex-bar-center-absolute' : 'oj-flex-bar-middle oj-sm-align-items-baseline'">
-            <h1 class="oj-web-applayout-header-title" title="Application Name" data-bind="text: appName"></h1>
-          </div>
+    <header role="banner" class="oj-web-applayout-header">
+      <div class="oj-web-applayout-max-width oj-flex-bar oj-sm-align-items-center">
+        <div data-bind="css: smScreen() ? 'oj-flex-bar-center-absolute' : 'oj-flex-bar-middle oj-sm-align-items-baseline'">
+          <h1 class="oj-web-applayout-header-title" title="Application Name" data-bind="text: appName"></h1>
         </div>
-      </header>
-      <div role="main" class="oj-web-applayout-max-width oj-web-applayout-content">
-        <div>
-    Planning and Resource Screen
-</div>
-<br/>
-<div id="hrm-content" class="demo-apphrm">
+      </div>
+    </header>
+    <div role="main" class="oj-web-applayout-max-width oj-web-applayout-content">
+      <div>
+        Planning and Resource Screen
+      </div>
+      <br/>
+      <div id="hrm-content" class="demo-apphrm">
 
-    <input id="filter" maxlength="30" placeholder="Type month number to filter by month" type="text"
-    data-bind="event: {keyup: handleKeyUp}, 
+      <div style="display:block" id="popup1" data-bind="ojComponent:{component: 'ojPopup'}">
+          <ul>
+              <li><b>Employee: </b> <span id="employee" class="popupEmployee"></span></li>
+                <li><i>Activity: </i><span id="activity" class="popupActivity"></span></li>
+                  <li>Week and Day: <span id="weekDay" class="popupWeekDay"></span></li>
+                  </ul>          
+                </div>
+        <input id="filter" maxlength="30" placeholder="Type month number to filter by month" type="text" data-bind="event: {keyup: handleKeyUp}, 
                textInput: filter, 
                ojComponent: {component:'ojInputText'}">
-
-    <div id='datagrid' 
-     style='width:100%;height:400px;' 
-     aria-label="Planning and Resource Grid"
-     data-bind = "ojComponent: {
+               <div style="display:block" id="popup1" data-bind="ojComponent:{component: 'ojPopup'}">
+              </div>
+          
+        <div id='datagrid' style='width:100%;height:400px;' aria-label="Planning and Resource Grid" data-bind="ojComponent: {
      component: 'ojDataGrid', 
      data: data,        
      selectionMode: { cell: 'multiple'}, 
@@ -97,17 +104,23 @@
         }
 
      }">
-</div>
+        </div>
       </div>
+
     </div>
-    
-    <script type="text/html" id="cell_template">
-          <span data-bind="html:'<span>' + $data + '</span>'">
-          </span>
-        </script>
+
     <script type="text/javascript" src="js/libs/require/require.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
 
-  </body>
+    <script type="text/html" id="cell_template">
+      <span data-bind="attr: { 'id': $root.uniqueId() }"> 
+          <!-- data-bind="attr: {'id': 'x'+$cellContext.indexes.row+'y'+$cellContext.indexes.column}" -->
+            <!-- <span data-bind="attr: { 'id': $root.uniqueId() }" data-bind="text: $data" data-bind="class:$data"></span> -->
+      <a id="ding" href="#"   data-bind="click: function(data, event) {console.log('click'); $root.clickCell( $cellContext, event) }">
+            <span id="sa" data-bind="text: $data " ></span>
+      </span>
+    </script>
+
+</body>
 
 </html>
