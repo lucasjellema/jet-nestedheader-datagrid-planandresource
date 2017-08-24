@@ -8,6 +8,9 @@ There is now also a filter option. When you type the month number into the searc
 
 ![alt text](screenshot-filter.png)
 
+Also support for a popup per cell. When the cell content is clicked, the popup opens for that cell (positioned at that cell) with some additional information for the cell. The popup data is written when the click occurs - to placeholders in the popup HTML.
+
+![alt text](screenshot-cellpopup.png)
 
 To install and run:
 
