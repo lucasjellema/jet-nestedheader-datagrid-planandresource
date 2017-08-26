@@ -179,7 +179,7 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
             }
 
             var cellSet = new NestedCellSet(rowStart, rowEnd, colStart,
-                colEnd, this.grid);
+                colEnd, this.grid, this.months);
             callbacks['success'].call(callbackObjects['success'], cellSet,
                 cellRanges);
         };
@@ -257,10 +257,10 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                     return this.months[header.month].name;
                 }
                 if (level == 1) {
-                    return this.months[header.month].weeks[header.week].week;
+                    return this.months[header.month].collapsed?'...':this.months[header.month].weeks[header.week].week;
                 }
                 if (level == 2) {
-                    return this.months[header.month].weeks[header.week].days[header.day].name;
+                    return this.months[header.month].collapsed?'...':this.months[header.month].weeks[header.week].days[header.day].name;
                 }
                 return 'Col' + start + 'Lev' + level;
             }
@@ -288,9 +288,16 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                 return this.getLevelCount() - 1 === level ? { 'key': 'r' + start } :
                     { 'key': 'r' + start + 'L' + level };
             }
+
             else if (this.axis === 'column') {
-                return this.getLevelCount() - 1 === level ? { 'key': 'c' + start } :
-                    { 'key': 'c' + start + 'L' + level };
+                var header = this.columnHeaders[index];
+                if (level == 0) {
+                    return { 'key': header.month }
+                }
+                else
+
+                    return this.getLevelCount() - 1 === level ? { 'key': 'c' + start } :
+                        { 'key': 'c' + start + 'L' + level };
             }
             return null;
         };
@@ -346,12 +353,12 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
             var header = this.columnHeaders[index];
             if (level == 0) {
                 start = this.months[header.month].seq;
-                extent = this.months[header.month].endSeq - start;
+                extent = this.months[header.month].collapsed?1: this.months[header.month].endSeq - start;
 
             }
             else if (level == 1) {
                 start = this.months[header.month].weeks[header.week].seq;
-                extent = this.months[header.month].weeks[header.week].endSeq - start;
+                extent = this.months[header.month].collapsed?1:this.months[header.month].weeks[header.week].endSeq - start;
             }
             else {
                 //extent of 1 on days
@@ -404,18 +411,22 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
             return index;
         };
 
-        function NestedCellSet(startRow, endRow, startCol, endCol, grid) {
+        function NestedCellSet(startRow, endRow, startCol, endCol, grid, months) {
             this.startRow = startRow;
             this.endRow = endRow;
             this.startCol = startCol;
             this.endCol = endCol;
             this.grid = grid;
+            this.months = months;
         };
 
         NestedCellSet.prototype.getData = function (indexes) {
             var cellValue = '';
             if (this.grid[indexes.row] && this.grid[indexes.row][indexes.column]) {
                 var cell = this.grid[indexes.row][indexes.column];
+                if (this.months[cell.month].collapsed)
+                    cellValue='...';
+                else
                 if (cell.activity)
                     cellValue = cell.activity;
                 else
@@ -459,12 +470,16 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
         //Knockout model to bind to the grid
         function dataGridModel(rawdata) {
             var self = this;
-            function prepareDataSource(rawcells) {
-                var datamodel = prepareModelFromRawCells(rawcells);
+
+            self.collapsedMonths = new Set();
+            self.collapsedMonths.add(   2);
+
+            function prepareDataSource(rawcells,collapsedMonths) {
+                var datamodel = prepareModelFromRawCells(rawcells, collapsedMonths);
                 var datasource = new NestedHeaderDataGridDataSource(datamodel.empseq, datamodel.seq, datamodel.months, datamodel.employees, datamodel.grid, datamodel.columnHeaders);
                 return datasource
             }
-            self.datasource = prepareDataSource(rawdata.cells);
+            self.datasource = prepareDataSource(rawdata.cells,self.collapsedMonths);
 
 
             self.data = ko.observable();
@@ -519,7 +534,7 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                 self.datasource = prepareDataSource(rawdata.cells.filter(function (cell) {
                     if (self.filter()) return (cell.month == self.filter())
                     else return true;
-                }));
+                }), self.collapsedMonths);
                 self.data(self.datasource);
                 self.data.valueHasMutated();
             }// handleKeyUp
@@ -528,6 +543,25 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
             //self.celletje = new ko.observable('');
             //self.celletje('Jan');
 
+            self.collapseHeader = function (headerContext, event) {
+                console.log("header collapsed " + headerContext);
+                // self.celletje ("me"+ new Date());
+                // self.celletje.valueHasMutated();
+                var level = headerContext.level; // 0 for months
+                var data = headerContext.data; // name of month
+                var index = headerContext.index; // column index for header; 0 for January
+                var key = headerContext.key; // month id , 1 for first month in grid (and in this.months)
+                var currentTarget = event.currentTarget;
+                var key = parseInt(headerContext.key); // month id , 1 for first month in grid (and in this.months)
+                if (self.collapsedMonths.has(parseInt(key))) {
+                  self.collapsedMonths.delete(parseInt(key));}
+                else
+                self.collapsedMonths.add(parseInt(key));
+                self.datasource = prepareDataSource(rawdata.cells, self.collapsedMonths);
+                self.data(self.datasource);
+                self.data.valueHasMutated();
+
+            }
 
             self.clickCell = function (cellContext, event) {
                 //                 console.log("cell clicked "+cellContext);
@@ -543,7 +577,7 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                     content = $("#popup1").find(".popupActivity").first();
                     content.text(cell.activity ? ' activity: ' + cell.activity : '');
                     content = $("#popup1").find(".popupWeekDay").first();
-                    content.text(cell.week+'-'+cell.day);
+                    content.text(cell.week + '-' + cell.day);
                     //     + ' Hours planned: ' + cell.planned
                     // );
                 }
@@ -554,16 +588,16 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
 
 
             // to provide a unique id for all cells!
-var id = 0;
+            var id = 0;
 
-self.uniqueId = function () {
-    return id++;
-}
+            self.uniqueId = function () {
+                return id++;
+            }
 
 
         }//dataGridModel
 
-        function prepareModelFromRawCells(rawcells) {
+        function prepareModelFromRawCells(rawcells, collapsedMonths) {
             var dm = {};
             var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'Oct', 'November', 'December'];
             var weekdays = [{ "name": "M" }, { "name": "T" }, { "name": "W", seq: null }, { "name": "T", seq: null }, { "name": "F", seq: null }, { "name": "S", seq: null }, { "name": "S", seq: null }];
@@ -585,12 +619,20 @@ self.uniqueId = function () {
                     employees[cell.name] = { "name": cell.name };
                 }
                 if (!months[cell.month]) {
-                    months[cell.month] = { "name": monthNames[cell.month - 1], "weeks": {}, "month": cell.month };
+                    var isCollapsed =  collapsedMonths.has(cell.month);
+
+                    months[cell.month] = { "name": monthNames[cell.month - 1], "weeks": {}, "month": cell.month, "collapsed" : collapsedMonths.has(cell.month)  };
                 }
 
                 if (!months[cell.month].weeks[cell.week]) {
+                    var isCollapsed =  collapsedMonths.has(cell.month);
+                    if (isCollapsed) {
+                        months[cell.month].weeks[cell.week] = { "days": [{ "name": "..."}], "startDate": "20170102" /* TODO */, "week": cell.week };
+                    }   
+                    else {                 
                     // assign deep clone of array https://stackoverflow.com/questions/42523881/how-to-clone-a-javascript-array-of-objects
-                    months[cell.month].weeks[cell.week] = { "days": JSON.parse(JSON.stringify(weekdays)), "startDate": "20170102", "week": cell.week };
+                    months[cell.month].weeks[cell.week] = { "days": JSON.parse(JSON.stringify(weekdays)), "startDate": "20170102" /* TODO */, "week": cell.week };
+                    }
                 }
 
             }//for
@@ -605,9 +647,11 @@ self.uniqueId = function () {
                     for (var day in months[month].weeks[week].days) {
                         columnHeaders.push({ "month": month, "week": week, "day": day });
                         months[month].weeks[week].days[day]['seq'] = seq++;
+                        if (months[month].collapsed) break;
                     }// weeks
                     months[month].weeks[week].endSeq = seq;
-                }// weeks
+                    if (months[month].collapsed) break;
+                }// weeks               
                 months[month].endSeq = seq;
             }// months
 
@@ -628,9 +672,13 @@ self.uniqueId = function () {
             for (var i = 0; i < rawcells.length; i++) {
                 var cell = rawcells[i];
                 var row = employees[cell["name"]].seq;
-                var col = months[cell.month].weeks[cell.week].days[cell.day]['seq'];
-                grid[row][col] = cell;
-            }//for
+                if (months[cell.month].collapsed) {
+                    
+                                    }
+                                    else {
+                                    var col = months[cell.month].weeks[cell.week].days[cell.day]['seq'];
+                                    grid[row][col] = cell;
+                                    }            }//for
 
             dm.seq = seq;
             dm.empseq = empseq;
