@@ -12,6 +12,11 @@ Also support for a popup per cell. When the cell content is clicked, the popup o
 
 ![alt text](screenshot-cellpopup.png)
 
+Support for Expand and Collapse at month level. With collapse, all days and weeks are reduced to a single column. With expand, the reverse takes place.
+
+![alt text](screenshot-collapseExpand.png)
+
+
 To install and run:
 
 * clone Git repository
