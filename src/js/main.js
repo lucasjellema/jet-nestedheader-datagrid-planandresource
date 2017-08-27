@@ -578,12 +578,15 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                 self.data(self.datasource);
                 self.data.valueHasMutated();
             }
-
+self.myFunction=  function(data, event) {
+console.log('myFunction');
+}
 
             self.clickCell = function (cellContext, event) {
                 //                 console.log("cell clicked "+cellContext);
                 // self.celletje ("me"+ new Date());
                 // self.celletje.valueHasMutated();
+                if (event) {
                 $('#popup1').ojPopup(); //initialize
                 var row = cellContext.indexes.row;
                 var col = cellContext.indexes.column;
@@ -601,6 +604,7 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                 var currentTarget = event.currentTarget;
                 var parent = currentTarget.parentElement;
                 $('#popup1').ojPopup('open', parent);
+            }
             }// clickCell
 
 

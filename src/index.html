@@ -81,7 +81,7 @@
               <a href="#"><img src="images/expand-all.gif" alt="Expand All" height="27px" 
                 data-bind="click: function(data, event) {$root.expandAllMonths( data) }"/>
               </a>
-          <div style="display:block" id="popup1" data-bind="ojComponent:{component: 'ojPopup'}">
+          <div style="display:block" id="popup1" data-bind="ojComponent:{component: 'ojPopup', "autoDismiss": "focusLoss"}">
         </div>
 
         <div id='datagrid' style='width:100%;height:400px;' aria-label="Planning and Resource Grid" data-bind="ojComponent: {
@@ -141,9 +141,14 @@
       <span data-bind="attr: { 'id': $root.uniqueId() }"> 
           <!-- data-bind="attr: {'id': 'x'+$cellContext.indexes.row+'y'+$cellContext.indexes.column}" -->
             <!-- <span data-bind="attr: { 'id': $root.uniqueId() }" data-bind="text: $data" data-bind="class:$data"></span>      -->
-      <a id="ding" href="#" data-bind="click: function(data, event) {console.log('click'); $root.clickCell( $cellContext, event) }">
-            <span id="sa" data-bind="text: $data " ></span>
-      </span>
+    <!--  <a id="ding" href="#" data-bind="click: function(data, event) {console.log('click'); $root.clickCell( $cellContext, event) }">
+            <span id="sa" data-bind="{ text: $data , event: {mouseover: function(data, event) {console.log('mouse enter')}"></span>
+      </a>-->
+      <div data-bind="event: {   mouseover: $root.clickCell( $cellContext, event) }">
+          <span id="sa2" data-bind="{ text: $data}"/>
+      </div>
+       
+    </span>
     </script>
 
 </body>
