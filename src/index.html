@@ -119,8 +119,9 @@
     <script type="text/javascript" src="js/main.js"></script>
 
     <script type="text/html" id="header_template">
-      <span data-bind="attr: { 'id': $root.uniqueId() }"> 
-            <span id="sa" data-bind="text: $data " >
+      <span data-bind="{attr: { 'id': $root.uniqueId()}} " > 
+            <span data-bind="{attr: { 'id': $root.uniqueId()}, event: {   click: function(data,event) {$root.zoominHeader( $headerContext, event) }}} " > 
+              <span id="sa" data-bind="text: $data " ></span>
             </span>
             <!-- ko if: $headerContext.level == 0 && !$headerContext.datasource.months[$headerContext.key].collapsed-->
               <a href="#"><img src="images/collapse.png" alt="collapse" height="17px" 
@@ -141,10 +142,10 @@
       <span data-bind="attr: { 'id': $root.uniqueId() }"> 
           <!-- data-bind="attr: {'id': 'x'+$cellContext.indexes.row+'y'+$cellContext.indexes.column}" -->
             <!-- <span data-bind="attr: { 'id': $root.uniqueId() }" data-bind="text: $data" data-bind="class:$data"></span>      -->
-    <!--  <a id="ding" href="#" data-bind="click: function(data, event) {console.log('click'); $root.clickCell( $cellContext, event) }">
+    <!--  <a id="ding" href="#" data-bind="click: function(data, event) {console.log('click'); $root.contextForCell( $cellContext, event) }">
             <span id="sa" data-bind="{ text: $data , event: {mouseover: function(data, event) {console.log('mouse enter')}"></span>
       </a>-->
-      <div data-bind="event: {   mouseover: $root.clickCell( $cellContext, event) }">
+      <div data-bind="event: {   mouseover: $root.contextForCell( $cellContext, event) }">
           <span id="sa2" data-bind="{ text: $data}"/>
       </div>
        
