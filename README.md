@@ -8,13 +8,19 @@ There is now also a filter option. When you type the month number into the searc
 
 ![alt text](screenshot-filter.png)
 
-Also support for a popup per cell. When the cell content is clicked, the popup opens for that cell (positioned at that cell) with some additional information for the cell. The popup data is written when the click occurs - to placeholders in the popup HTML.
+Also support for a popup per cell. When the mouse hovers over a cell or the cell contents is clicked, the popup opens for that cell (positioned at that cell) with some additional information for the cell. The popup data is written when the click occurs - to placeholders in the popup HTML.
 
 ![alt text](screenshot-cellpopup.png)
 
 Support for Expand and Collapse at month level. With collapse, all days and weeks are reduced to a single column. With expand, the reverse takes place.
 
 ![alt text](screenshot-collapseExpand.png)
+
+Support for Expand All/Collapse all - to expand or collapse all months and weeks in one step.
+
+Also support for zoom in/drill down: click on a month or week header to bring that month or week exclusive into focus
+![alt text](screenshot-drilldownFocus.png)
+
 
 
 To install and run:
