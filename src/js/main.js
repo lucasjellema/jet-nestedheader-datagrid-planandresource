@@ -562,6 +562,23 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                 self.data.valueHasMutated();
 
             }
+            self.collapseAllMonths = function ( data) {
+                var r = Array.from(Object.keys(data.datasource.months), x => x);
+                self.collapsedMonths = new Set( Array.from(Object.keys(data.datasource.months), x => parseInt(x)));
+                // refresh
+                self.datasource = prepareDataSource(rawdata.cells, self.collapsedMonths);
+                self.data(self.datasource);
+                self.data.valueHasMutated();
+            }
+
+            self.expandAllMonths = function ( data) {
+                self.collapsedMonths = new Set();
+                // refresh
+                self.datasource = prepareDataSource(rawdata.cells, self.collapsedMonths);
+                self.data(self.datasource);
+                self.data.valueHasMutated();
+            }
+
 
             self.clickCell = function (cellContext, event) {
                 //                 console.log("cell clicked "+cellContext);
