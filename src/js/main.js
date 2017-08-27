@@ -356,9 +356,14 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
             var extent, start, end, before, after;
             var header = this.columnHeaders[index];
             if (level == 0) {
+                try {
                 start = this.months[header.month].seq;
                 extent = this.months[header.month].collapsed ? 1 : this.months[header.month].endSeq - start;
-
+                }
+                catch (e) {
+                    console.log("index "+index);
+                    console.log("level "+level);
+                }
             }
             else if (level == 1) {
                 start = this.months[header.month].weeks[header.week].seq;
@@ -540,12 +545,17 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                 self.data.valueHasMutated();
             }// handleKeyUp
 
+            self.clearFilter = function () {
+                self.filter('');
+                self.filter.valueHasMutated();
+            }
+
             // this function is invoked when the user clicks on any header (any level)
             // the intended functionality is that the header that was clicked on defines the new context or focus
             // for example: click on a month, and all the data grid will show is data for that month
             // for example: click on a week, and all the data grid will show is data for that week (and therefore only one level of headers - for the days)
 
-            self.zoom = {}; // object to hold current zoom situation - zoom on month and possibly on week?
+            self.zoom = {}; // object to hold current zoom situation - zoom on month and possibly on week
 
             self.zoominHeader = function (headerContext, event) {
                 var level = headerContext.level; // 0 for months
@@ -563,6 +573,7 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                     self.collapsedMonths.delete(self.zoom.month);
                 }
 
+                self.clearFilter();
                 self.datasource = prepareDataSource(rawdata.cells, self.collapsedMonths, self.zoom);
                 self.data(self.datasource);
                 self.data.valueHasMutated();
@@ -591,6 +602,7 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                 self.collapsedMonths = new Set(Array.from(Object.keys(data.datasource.months), x => parseInt(x)));
                 // refresh
                 self.zoom = {};
+                self.clearFilter();
                 self.datasource = prepareDataSource(rawdata.cells, self.collapsedMonths, self.zoom);
                 self.data(self.datasource);
                 self.data.valueHasMutated();
@@ -600,6 +612,7 @@ require(['ojs/ojcore', 'knockout', 'appController', 'mylib/mydata', 'ojs/ojknock
                 self.collapsedMonths = new Set();
                 // refresh
                 self.zoom = {};
+                self.clearFilter();
                 self.datasource = prepareDataSource(rawdata.cells, self.collapsedMonths,self.zoom);
                 self.data(self.datasource);
                 self.data.valueHasMutated();
