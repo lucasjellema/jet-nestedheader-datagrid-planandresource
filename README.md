@@ -21,7 +21,8 @@ Support for Expand All/Collapse all - to expand or collapse all months and weeks
 Also support for zoom in/drill down: click on a month or week header to bring that month or week exclusive into focus
 ![alt text](screenshot-drilldownFocus.png)
 
-
+A minidemo of the Nested Datagrid is shown in this animated gif:
+![alt text](animatedGifNestedDataGrid.gif)
 
 To install and run:
 
